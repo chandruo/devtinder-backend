@@ -27,9 +27,11 @@ const userSchema = new mongoose.Schema(
         message: "Please enter valid Email",
       },
     },
+    photoUrl: {
+      type: String,
+    },
     password: {
       type: String,
-      
     },
   },
   { timestamps: true },

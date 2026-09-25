@@ -9,7 +9,7 @@ const authRouter = express.Router()
 
 authRouter.post("/signup", async (req, res) => {
   try {
-    const { firstName, lastName, age, emailId, password } = req.body;
+    const { firstName, lastName, age, emailId, password, photoUrl } = req.body;
 
     const hashpassword = await bcrypt.hash(password, 10);
     const user = new User({
@@ -18,6 +18,7 @@ authRouter.post("/signup", async (req, res) => {
       age,
       emailId,
       password: hashpassword,
+      photoUrl
     });
 
     await user.save();
@@ -52,10 +53,12 @@ authRouter.post("/login", async (req, res) => {
       secure: false,
       maxAge: 60 * 60 * 1000,
     });
+    console.log(user)
     const userRes = {
       firstName: user.firstName,
       lastName: user.lastName,
-      age: user.age
+      age: user.age,
+      photoUrl: user.photoUrl,
     }
 
     res.status(200).json({
