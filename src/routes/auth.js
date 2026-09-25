@@ -1,11 +1,11 @@
-const express = require("express")
+const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
 const { auth } = require("../middlewares/auth");
 
-const authRouter = express.Router()
+const authRouter = express.Router();
 
 authRouter.post("/signup", async (req, res) => {
   try {
@@ -18,7 +18,7 @@ authRouter.post("/signup", async (req, res) => {
       age,
       emailId,
       password: hashpassword,
-      photoUrl
+      photoUrl,
     });
 
     await user.save();
@@ -53,28 +53,36 @@ authRouter.post("/login", async (req, res) => {
       secure: false,
       maxAge: 60 * 60 * 1000,
     });
-    console.log(user)
+    console.log(user);
     const userRes = {
       firstName: user.firstName,
       lastName: user.lastName,
       age: user.age,
       photoUrl: user.photoUrl,
-    }
+    };
 
     res.status(200).json({
       message: "Login successfull",
-      userRes
+      userRes,
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
+authRouter.post("/logout", async (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+  });
+
+  res.status(200).json({ message: "user logged out successfully" });
+});
+
 authRouter.get("/profile", auth, async (req, res) => {
-  const userDetials = req.user;
+  const userDetails = req.user;
   res.status(200).json({
-    userDetials,
+    userDetails,
   });
 });
 
-module.exports = authRouter
+module.exports = authRouter;

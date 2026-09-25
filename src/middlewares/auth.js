@@ -1,8 +1,11 @@
-const User = require("../models/user")
+const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const auth = async (req, res, next) => {
   try {
     const { token } = req.cookies;
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
     const tokenverified = jwt.verify(token, "JWT_SECRET");
 
     const user = await User.findById({ _id: tokenverified.userId });
@@ -11,10 +14,10 @@ const auth = async (req, res, next) => {
     }
 
     req.user = user;
-
     next();
   } catch (err) {
-    res.status(500).json({ message: "something went wronggg" });
+    console.log(err);
+    res.status(500).json({ message: err.message });
   }
 };
 
