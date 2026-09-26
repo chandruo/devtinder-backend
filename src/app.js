@@ -2,18 +2,21 @@ const express = require("express");
 const connectDB = require("./config/database");
 const User = require("./models/user");
 const cookieparser = require("cookie-parser");
-const authRouter =  require("./routes/auth")
-const cors = require("cors")
+const authRouter = require("./routes/auth");
+const requestRouter = require("./routes/connectionRequest");
+const userRouter = require("./routes/user");
+const cors = require("cors");
 
 const app = express();
 
-app.use(cors({
-  origin: "http://localhost:777",
-  credentials: true
-}))
+app.use(
+  cors({
+    origin: "http://localhost:777",
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(cookieparser());
-
 
 connectDB()
   .then(() => {
@@ -24,8 +27,9 @@ connectDB()
   })
   .catch((err) => console.log(err));
 
-  app.use("/auth",authRouter)
-
+app.use("/auth", authRouter);
+app.use("/", requestRouter);
+app.use("/user", userRouter);
 
 app.get("/feed", async (req, res) => {
   try {
